@@ -9,13 +9,14 @@ include "../entities/panier.php";
 include "../core/panierC.php";
 
 if (isset($_POST['total']) and isset($_POST['idproduit'])and isset($_POST['quantite'])){
- $commande1=new commande($_POST['userid'],$_POST['total'],'non payée');
+ $commande1=new commande($_POST['userid'],$_POST['total'],'non livrée');
 $commande1C=new commandeC();
  $x=$commande1C->ajoutercommande($commande1);
 
-
 $_SESSION['product_ids'] = array_column($_SESSION['panier'],'codeProd');
 foreach($x as $row) {$p= $row['i']; }
+$_SESSION['cmd']=$p;
+
 ob_clean();
 $n=count($_SESSION['product_ids']);
 $pdf="	<img src='../assets/images/logopdf.png'>

@@ -1,5 +1,8 @@
 <?php 
 session_start();
+if(!isset($_SESSION['panier'])){
+    header('Location: shop.php');}
+
  include"index_sub/header.php";  
   include"config.php"; ?>
 
@@ -113,6 +116,7 @@ session_start();
                                     </thead>
                                     <tbody>
                                         <?php 
+                                        
                       foreach ($_SESSION['panier'] as $keys => $row) {  
                                      if (isset($tot)) {
                         $tot+=($row['quantite'] * $row['prix'])  ;
@@ -142,7 +146,7 @@ session_start();
                             <div class="col-lg-6 col-12 mb--15">
                                 <!-- Calculate Shipping -->
                                 <div class="calculate-shipping">
-                                    <h4>Calculate Shipping</h4>
+                                    <h4>Adresse de livraison</h4>
                                     <form action="#">
                                         <div class="row">
                                             <div class="col-md-6 col-12 mb--25">
@@ -206,10 +210,13 @@ session_start();
                    
                   $u="login-register.php"; }
                   ?>
+
                 <form action="<?php echo $u; ?>" method="POST">
                                         
                                         <input type="hidden" value="<?php echo $tot  ; ?>" name="total">
-                                        <input type="hidden" value="no" name="userid">
+                                        <?php if(isset($_SESSION['id'])) {  ?>
+                                        <input type="hidden" value="<?php echo $_SESSION['id'];  ?>" name="userid">
+                                    <?php } ?>
                                          <?php  foreach ($_SESSION['panier'] as $keys => $row) {  ?>
                       
                       <input type="hidden" value="<?php echo $row['codeProd'] ; ?>" name="idproduit[]">
@@ -221,11 +228,17 @@ session_start();
                                          </form>
                                        
                                         <button class="update-btn">Update Cart</button>
+
                                     </div>
+
+
+
                                 </div>
                             </div>
+               
 
                         </div>
+
                         
                     </div>
                 </div>

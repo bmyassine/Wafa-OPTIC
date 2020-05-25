@@ -39,7 +39,7 @@ use League\OAuth2\Client\Provider\Google;
     try {
 
 
-        $mail->setFrom($google_email, 'Lunette');
+        $mail->setFrom($google_email, 'Wafa Optic');
         $mail->addAddress('mohammedamine.kridiss@esprit.tn', "dadamin");
         $mail->Subject = 'BON DE COMMANDE';
       $mail->isHTML(TRUE);
@@ -91,7 +91,12 @@ use League\OAuth2\Client\Provider\Google;
     {
         echo $e->getMessage();
     }
-
+$messagebird=new \MessageBird\Client('2LqepDEUZcA2nsJr0oi5R74Eg');
+$message = new \MessageBird\Objects\Message();
+$message->originator = 'Opwafa';
+$message->recipients = array(+21651816719);
+$message->body='votre commande a bien été enregistrée.Merci pour votre achat!';
+$messagebird->messages->create($message);
 
 //var_dump($_SESSION['email']);
 header('Location: index.php'); 

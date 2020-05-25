@@ -54,7 +54,7 @@
 										</li>
 									<?php } else { ?>
 										<li>
-											<a href="assets/logout.php">Logout</a>
+											<a href="logout.php">Logout</a>
 										</li>
 									<?php } ?>
 									</ul>
