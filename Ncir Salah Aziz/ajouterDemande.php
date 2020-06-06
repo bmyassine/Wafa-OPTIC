@@ -1,7 +1,9 @@
 <?PHP
 
-include "C:/wamp64/www/Fourat/Fourat/entities/reclamatio.php";
-include "C:/wamp64/www/Fourat/Fourat/core/reclamatioC.php";
+
+include "C:/xampp/htdocs/Fourat/Fourat/core/reclamatioC.php";
+include "C:/xampp/htdocs/Fourat/Fourat/entities/reclamatio.php";
+
 //include "../Core/sms.php";
 
 if (isset($_POST['num']) and isset($_POST['subject']) and isset ($_POST['message']) )
@@ -11,6 +13,8 @@ if (isset($_POST['num']) and isset($_POST['subject']) and isset ($_POST['message
 $reclamatio1=new reclamatio($date,$_POST['num'],$_POST['subject'],$_POST['message'],"en attente");
 $reclamatio1C=new reclamatioC();
 $reclamatio1C->ajouterreclamatio($reclamatio1);
+
+$result=$reclamatio1C->getemail($_GET['id']);
 header('Location:cart.php');
 
 //	header('Location:('Location:cart.php');
@@ -64,16 +68,50 @@ En accédant à ce service, le client a lassurance que son problème sera trait�
 </body>
 </html>';
 
+foreach($result as $row )
+{
+    $email=$row['email'];
+}
 
-mail("nciraziz@gmail.com", "Reclamation!", $message, $header);
+mail($email, "Reclamation!", $message, $header);
+$username = 'ahmed123321';
+$password = 'Azerty123';
+$messages = array(
+  array('to'=>'+21655568071', 'body'=>'votre réclamation a été recu!')
+);  
 
+$result = send_message( json_encode($messages), 'https://api.bulksms.com/v1/messages?auto-unicode=true&longMessageMaxParts=30', $username, $password );
 
-//$username = '26623988';
-//$password = 'Azerty123';
-//$messages = array(
-//array('to'=>'+21652812423', 'body'=>'votre demande a été effectuer'),
-//);
-//$result = new sms();
-//$result->send_message( json_encode($messages), "https://api.bulksms.com/v1/messages", $username, $password );
+if ($result['http_status'] != 201) {
+  print "Error sending: " . ($result['error'] ? $result['error'] : "HTTP status ".$result['http_status']."; Response was " .$result['server_response']);
+} else {
+  print "Response " . $result['server_response'];
+  // Use json_decode($result['server_response']) to work with the response further
+}
+
+function send_message ( $post_body, $url, $username, $password) {
+  $ch = curl_init( );
+  $headers = array(
+  'Content-Type:application/json',
+  'Authorization:Basic '. base64_encode("$username:$password")
+  );
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt ( $ch, CURLOPT_URL, $url );
+  curl_setopt ( $ch, CURLOPT_POST, 1 );
+  curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+  curl_setopt ( $ch, CURLOPT_POSTFIELDS, $post_body );
+  // Allow cUrl functions 20 seconds to execute
+  curl_setopt ( $ch, CURLOPT_TIMEOUT, 20 );
+  // Wait 10 seconds while trying to connect
+  curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+  $output = array();
+  $output['server_response'] = curl_exec( $ch );
+  $curl_info = curl_getinfo( $ch );
+  $output['http_status'] = $curl_info[ 'http_code' ];
+  $output['error'] = curl_error($ch);
+  curl_close( $ch );
+  return $output;
+} 
+
     
 ?>
